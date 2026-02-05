@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Méthodes de développement logiciel</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        
+        @media print {
+            body { margin: 0; padding: 15mm; background: white; }
+            .page-break { page-break-before: always; }
+            button { display: none; }
+            .methode { box-shadow: none !important; }
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+            line-height: 1.8;
+            max-width: 210mm;
+            margin: 0 auto;
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #2d3748;
+            min-height: 100vh;
+        }
+        
+        .print-btn {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .print-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.5);
+        }
+        
+        h1 {
+            text-align: center;
+            color: white;
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 50px;
+            text-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            letter-spacing: -0.5px;
+        }
+        
+        .methode {
+            margin-bottom: 35px;
+            border-radius: 20px;
+            padding: 32px;
+            background: white;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .methode::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(90deg, var(--color-start), var(--color-end));
+        }
+        
+        .cascade { --color-start: #4facfe; --color-end: #00f2fe; }
+        .v { --color-start: #43e97b; --color-end: #38f9d7; }
+        .y { --color-start: #fa709a; --color-end: #fee140; }
+        
+        .methode:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 70px rgba(0,0,0,0.15);
+        }
+        
+        .methode h2 {
+            margin: 0 0 25px 0;
+            padding: 0;
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--color-start), var(--color-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .section {
+            margin: 20px 0;
+        }
+        
+        .section-title {
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 12px;
+            font-size: 17px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .flowchart {
+            background: linear-gradient(135deg, #f6f8fb 0%, #f1f4f9 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            white-space: pre;
+            font-size: 14px;
+            line-height: 1.8;
+            border-left: 4px solid var(--color-start);
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        ul {
+            margin: 12px 0;
+            padding-left: 25px;
+            list-style: none;
+        }
+        
+        li {
+            margin: 10px 0;
+            padding-left: 8px;
+            position: relative;
+        }
+        
+        li::before {
+            content: '→';
+            position: absolute;
+            left: -20px;
+            color: var(--color-start, #667eea);
+            font-weight: bold;
+        }
+        
+        .avantages { 
+            color: #38a169;
+            background: linear-gradient(135deg, #e6fffa 0%, #f0fff4 100%);
+            padding: 3px 10px;
+            border-radius: 8px;
+            display: inline-block;
+        }
+        
+        .inconvenients { 
+            color: #e53e3e;
+            background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%);
+            padding: 3px 10px;
+            border-radius: 8px;
+            display: inline-block;
+        }
+        
+        .tableau {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 25px 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .tableau th, .tableau td {
+            padding: 16px 20px;
+            text-align: left;
+        }
+        
+        .tableau th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+            font-size: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .tableau td {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .tableau tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .tableau tr:nth-child(even) td {
+            background: #f7fafc;
+        }
+        
+        .tableau tbody tr {
+            transition: all 0.2s ease;
+        }
+        
+        .tableau tbody tr:hover td {
+            background: #edf2f7;
+            transform: scale(1.01);
+        }
+        
+        .resume-final {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 35px;
+            margin-top: 40px;
+            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);
+            color: white;
+        }
+        
+        .resume-final h2 {
+            color: white;
+            margin: 0 0 20px 0;
+            font-size: 26px;
+            font-weight: 700;
+        }
+        
+        .resume-final p {
+            margin: 15px 0;
+            font-size: 16px;
+            line-height: 1.8;
+            background: rgba(255,255,255,0.1);
+            padding: 15px 20px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .resume-final strong {
+            font-weight: 700;
+            color: #ffd700;
+        }
+        
+        .emoji {
+            font-style: normal;
+        }
+    </style>
+</head>
+<body>
+    <button class="print-btn" onclick="window.print()">🖨️ Imprimer</button>
+    
+    <h1>📚 Méthodes de développement logiciel</h1>
+    
+    <!-- MÉTHODE CASCADE -->
+    <div class="methode cascade">
+        <h2>🟦 Méthode en Cascade</h2>
+        
+        <div class="section">
+            <div class="section-title">📌 Principe</div>
+            <p>Approche <strong>séquentielle et linéaire</strong> où chaque phase doit être complétée avant de passer à la suivante. Aucun retour en arrière n'est prévu dans le processus.</p>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">📘 Déroulement</div>
+            <div class="flowchart">Analyse des besoins
+    ↓
+Conception architecturale
+    ↓
+Développement
+    ↓
+Phase de tests
+    ↓
+Mise en production</div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">🧪 Stratégie de test</div>
+            <ul>
+                <li>Phase de test unique en fin de cycle</li>
+                <li>Validation globale du système complet</li>
+                <li>Absence de tests intermédiaires par phase</li>
+                <li>Vérification finale de la conformité aux spécifications</li>
+            </ul>
+        </div>
+        
+        <div class="section">
+            <div class="section-title avantages">👍 Points forts</div>
+            <ul>
+                <li>Simplicité de compréhension et d'implémentation</li>
+                <li>Gestion de projet facilitée par la structure rigide</li>
+                <li>Documentation claire à chaque étape</li>
+                <li>Planification prévisible des ressources</li>
+            </ul>
+        </div>
+        
+        <div class="section">
+            <div class="section-title inconvenients">👎 Limitations</div>
+            <ul>
+                <li>Rigidité face aux changements de requirements</li>
+                <li>Découverte tardive des défauts = coûts élevés</li>
+                <li>Risque accru si les besoins évoluent</li>
+                <li>Validation client différée en fin de projet</li>
+            </ul>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">🎯 Contextes d'utilisation</div>
+            <ul>
+                <li>Projets de petite envergure avec périmètre stable</li>
+                <li>Exigences parfaitement définies dès le départ</li>
+                <li>Environnements réglementés nécessitant une documentation exhaustive</li>
+            </ul>
+        </div>
+    </div>
+    
+    <!-- MÉTHODE EN V -->
+    <div class="methode v">
+        <h2>🟩 Méthode en V</h2>
+        
+        <div class="section">
+            <div class="section-title">📌 Principe</div>
+            <p>Extension du modèle en cascade intégrant une <strong>traçabilité bidirectionnelle</strong> entre phases de conception et phases de validation. Chaque niveau de conception possède son niveau de test correspondant.</p>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">📘 Architecture du processus</div>
+            <div class="flowchart">PHASE DESCENDANTE (Spécification)
+    Analyse des exigences ←→ Tests d'acceptation
+         ↓                              ↑
+    Conception système    ←→ Tests système
+         ↓                              ↑
+    Conception détaillée  ←→ Tests d'intégration
+         ↓                              ↑
+    Implémentation        ←→ Tests unitaires
+         
+PHASE ASCENDANTE (Validation)</div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">🧪 Stratégie de test</div>
+            <ul>
+                <li>Planification des tests dès les phases de conception</li>
+                <li>Quatre niveaux de validation distincts et complémentaires</li>
+                <li>Traçabilité complète entre exigences et tests</li>
+                <li>Approche systématique garantissant une couverture exhaustive</li>
+            </ul>
+        </div>
+        
+        <div class="section">
+            <div class="section-title avantages">👍 Points forts</div>
+            <ul>
+                <li>Qualité élevée grâce à la validation multi-niveaux</li>
+                <li>Structure rigoureuse facilitant l'audit et la certification</li>
+                <li>Détection précoce des incohérences de conception</li>
+                <li>Documentation technique complète et traçable</li>
+            </ul>
+        </div>
+        
+        <div class="section">
+            <div class="section-title inconvenients">👎 Limitations</div>
+            <ul>
+                <li>Manque d'agilité face aux changements</li>
+                <li>Cycle de développement étendu</li>
+                <li>Investissement important en temps et ressources</li>
+                <li>Overhead documentaire conséquent</li>
+            </ul>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">🎯 Contextes d'utilisation</div>
+            <ul>
+                <li>Systèmes critiques à haute fiabilité (aéronautique, médical)</li>
+                <li>Applications nécessitant une certification normative</li>
+                <li>Projets complexes avec exigences de traçabilité</li>
+                <li>Environnements où l'échec n'est pas acceptable</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="page-break"></div>
+    
+    <!-- MÉTHODE EN Y -->
+    <div class="methode y">
+        <h2>🟧 Méthode en Y (2TUP - Two Track Unified Process)</h2>
+        
+        <div class="section">
+            <div class="section-title">📌 Principe fondamental</div>
+            <p>Approche de <strong>développement à double voie parallèle</strong>. Le principe clé : deux équipes progressent <strong>simultanément</strong> sans s'attendre, l'une sur les aspects fonctionnels, l'autre sur l'architecture technique, avant de fusionner leurs travaux.</p>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">📘 Déroulement chronologique</div>
+            <div class="flowchart">        Étude Préliminaire
+     (Définition du périmètre)
+              ↓
+         ┌────┴────┐
+         ↓         ↓
+    BRANCHE      BRANCHE
+  FONCTIONNELLE  TECHNIQUE
+      (👥)         (⚙️)
+         │         │
+    Analyse    Architecture
+    des besoins  technique
+         │         │
+    Cas d'usage  Prototypes
+         │         │
+    Règles métier Tests perf.
+         │         │
+         └────┬────┘
+              ↓
+        ★ FUSION ★
+    (Injection du métier
+    dans l'architecture)
+              ↓
+    Conception Détaillée
+              ↓
+          Codage
+              ↓
+          Tests
+              ↓
+        Livraison</div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">⚡ La force du parallélisme</div>
+            <ul>
+                <li><strong>Équipe Fonctionnelle (gauche)</strong> : Définit QUOI faire, sans se préoccuper du COMMENT technique</li>
+                <li><strong>Équipe Technique (droite)</strong> : Construit l'infrastructure, teste les technologies, sans attendre les détails métier</li>
+                <li><strong>Avantage majeur</strong> : Si l'architecture technique se révèle inadaptée, elle peut être modifiée pendant que l'analyse fonctionnelle continue</li>
+                <li><strong>Aucun blocage</strong> : Les deux équipes avancent indépendamment jusqu'à la fusion</li>
+            </ul>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">🧪 Stratégie de test multi-phases</div>
+            
+            <p style="margin: 15px 0; padding: 12px; background: linear-gradient(135deg, #fff5f5 0%, #ffe5e5 100%); border-radius: 8px; border-left: 4px solid #fa709a;"><strong>⚠️ DIFFÉRENCE CRITIQUE :</strong> Contrairement à Cascade et V, les tests commencent <strong>AVANT le codage</strong> de l'application finale !</p>
+            
+            <p style="font-weight: 600; margin-top: 20px; color: #fa709a;">🔹 Phase 1 : Tests préventifs (PENDANT les branches)</p>
+            <ul>
+                <li><strong>Branche Technique</strong> : Prototypes et tests de charge<br>
+                <em>→ Exemple : Créer un serveur vide pour tester 10 000 connexions simultanées. Si ça plante, on change l'architecture immédiatement.</em></li>
+                <li><strong>Branche Fonctionnelle</strong> : Validation de maquettes<br>
+                <em>→ Exemple : Montrer des écrans de démonstration aux utilisateurs pour valider la compréhension des besoins.</em></li>
+            </ul>
+            
+            <p style="font-weight: 600; margin-top: 20px; color: #fa709a;">🔹 Phase 2 : Tests classiques (APRÈS la fusion et le codage)</p>
+            <ul>
+                <li><strong>A. Tests Unitaires</strong> : Chaque fonction codée isolément<br>
+                <em>→ Qui : Le développeur | Exemple : Tester si calcul_prix(10km, 2€/km) retourne bien 20€</em></li>
+                
+                <li><strong>B. Tests d'Intégration</strong> ⭐ (Spécificité du Y)<br>
+                <em>→ Qui : Intégrateurs | Objectif : Vérifier que le code métier (gauche) fonctionne sur l'architecture (droite)</em><br>
+                <em>→ Exemple : Le calcul de prix tourne-t-il correctement sur le serveur AWS ?</em></li>
+                
+                <li><strong>C. Tests Fonctionnels/Système</strong> : Scénarios utilisateur complets<br>
+                <em>→ Qui : Testeurs QA | Exemple : Commander une course → Voiture arrive → Paiement effectué</em></li>
+                
+                <li><strong>D. Recette/Acceptance</strong> : Validation finale client<br>
+                <em>→ Qui : Client final | Décision : "On livre en production"</em></li>
+            </ul>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">🍝 Analogie : La recette de pâtes bolognaise</div>
+            <div style="background: linear-gradient(135deg, #fff9e6 0%, #fff0cc 100%); padding: 15px; border-radius: 10px; margin: 10px 0;">
+                <p><strong>❌ Méthode Cascade (séquentiel) :</strong></p>
+                <p style="margin-left: 15px;">1. Couper oignons et viande<br>
+                2. Cuire la sauce (20 min)<br>
+                3. <em>Attendre que la sauce soit finie</em><br>
+                4. Faire bouillir l'eau<br>
+                5. Cuire les pâtes (10 min)<br>
+                <strong>⏱️ Résultat : 35+ minutes</strong></p>
+                
+                <p style="margin-top: 15px;"><strong>✅ Méthode en Y (parallèle) :</strong></p>
+                <p style="margin-left: 15px;">
+                <strong>Gauche :</strong> Préparer la sauce (viande, tomate...)<br>
+                <strong>Droite :</strong> <em>EN MÊME TEMPS</em>, faire bouillir l'eau et préparer les casseroles<br>
+                <strong>Fusion :</strong> Quand sauce ET pâtes sont prêtes → mélanger<br>
+                <strong>⏱️ Résultat : 20 minutes (gain de 40%)</strong></p>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">🎯 Philosophie anti "Big Bang"</div>
+            <ul>
+                <li><strong>Problème Cascade</strong> : Si ça plante aux tests finaux → impossible de savoir si c'est l'architecture, le code ou une incompréhension du besoin</li>
+                <li><strong>Solution Y</strong> : Si ça plante aux tests finaux :<br>
+                ✓ L'architecture est OK (validée en branche droite)<br>
+                ✓ Les besoins sont OK (validés en branche gauche)<br>
+                → <strong>C'est forcément le code ou l'intégration</strong> = beaucoup plus facile à corriger !</li>
+            </ul>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">🔄 Utilisation itérative</div>
+            <p>Le Y s'utilise souvent en cycles courts pour développer fonctionnalité par fonctionnalité :</p>
+            <ul>
+                <li><strong>Itération 1</strong> : Petit Y pour "Inscription" → Code → Tests → ✅</li>
+                <li><strong>Itération 2</strong> : Petit Y pour "Géolocalisation" → Code → Tests → ✅</li>
+                <li><strong>Itération 3</strong> : Petit Y pour "Paiement" → Code → Tests → ✅</li>
+            </ul>
+            <p style="margin-top: 10px; font-style: italic;">→ Approche incrémentale permettant des livraisons progressives</p>
+        </div>
+        
+        <div class="section">
+            <div class="section-title avantages">👍 Points forts</div>
+            <ul>
+                <li>Réduction drastique du time-to-market grâce au parallélisme</li>
+                <li>Détection précoce des risques techniques (avant le codage)</li>
+                <li>Flexibilité : changement d'architecture possible sans tout recommencer</li>
+                <li>Isolation des problèmes facilitant le diagnostic</li>
+                <li>Validation continue des hypothèses métier et techniques</li>
+            </ul>
+        </div>
+        
+        <div class="section">
+            <div class="section-title inconvenients">👎 Limitations</div>
+            <ul>
+                <li>Coordination complexe entre deux équipes parallèles</li>
+                <li>Risque de divergence si communication insuffisante</li>
+                <li>Nécessite des profils expérimentés sur les deux branches</li>
+                <li>Point de fusion critique : nécessite une synchronisation précise</li>
+                <li>Overhead de gestion des deux voies simultanées</li>
+            </ul>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">🎯 Contextes d'utilisation</div>
+            <ul>
+                <li>Projets où architecture technique complexe à valider</li>
+                <li>Environnements où besoins métier et choix techniques évoluent</li>
+                <li>Équipes multidisciplinaires (business analysts + architectes)</li>
+                <li>Projets nécessitant une mise sur marché rapide</li>
+                <li>Applications avec fortes contraintes de performance</li>
+            </ul>
+        </div>
+    </div>
+    
+    <!-- TABLEAU COMPARATIF -->
+    <div class="section">
+        <h2 style="color: white; text-align: center; margin: 40px 0 30px 0; font-size: 32px;">🔵 Analyse comparative</h2>
+        <table class="tableau">
+            <thead>
+                <tr>
+                    <th>Méthodologie</th>
+                    <th>Moment des tests</th>
+                    <th>Approche de validation</th>
+                    <th>Avantage distinctif</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>🟦 Cascade</strong></td>
+                    <td>Phase finale uniquement</td>
+                    <td>Validation globale du système complet</td>
+                    <td>Simplicité et prévisibilité</td>
+                </tr>
+                <tr>
+                    <td><strong>🟩 V</strong></td>
+                    <td>Phase finale avec préparation anticipée</td>
+                    <td>Tests multi-niveaux avec traçabilité complète</td>
+                    <td>Qualité et rigueur maximales</td>
+                </tr>
+                <tr>
+                    <td><strong>🟧 Y</strong></td>
+                    <td>Continu pendant et après développement</td>
+                    <td>Tests modulaires puis intégration progressive</td>
+                    <td>Parallélisation et rapidité</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- RÉSUMÉ FINAL -->
+    <div class="resume-final">
+        <h2>🟢 Synthèse stratégique</h2>
+        
+        <p><strong>🟦 MODÈLE CASCADE</strong><br>
+        Approche séquentielle stricte avec validation finale unique. La phase de test intervient exclusivement en fin de cycle après achèvement complet du développement.</p>
+        
+        <p><strong>🟩 MODÈLE EN V</strong><br>
+        Extension du modèle cascade intégrant une stratégie de test structurée. Chaque phase de conception définit préalablement son protocole de validation correspondant, garantissant une traçabilité bidirectionnelle.</p>
+        
+        <p><strong>🟧 MODÈLE EN Y</strong><br>
+        Architecture modulaire permettant le développement parallèle de composants indépendants. Les modules sont ensuite intégrés progressivement avec validation à chaque étape d'assemblage.</p>
+    </div>
+    
+    <div style="text-align: center; margin-top: 40px; color: #999; font-size: 12px;">
+        Document créé avec Claude • Version imprimable
+    </div>
+</body>
+</html>
